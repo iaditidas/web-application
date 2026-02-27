@@ -1,0 +1,7 @@
+{
+  "name": "Copy of Flash Man",
+  "description": "Hyper-local food delivery platform delivering in under 15 minutes with in-house cloud kitchens and riders.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
