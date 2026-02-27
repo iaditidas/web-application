@@ -11,6 +11,7 @@ export const AdminDashboard: React.FC<{ user: User, onLogout: () => void }> = ({
   const [activeTab, setActiveTab] = useState<'LIVE' | 'ANALYTICS' | 'SETTINGS'>('LIVE');
   const [kitchenStatus, setKitchenStatus] = useState(mockStore.getKitchenStatus());
   const [opHours, setOpHours] = useState(mockStore.getOperationalHours());
+  const [adminUpi, setAdminUpi] = useState(mockStore.getAdminUpi());
 
   const fetchOrders = () => {
     try {
@@ -48,6 +49,7 @@ export const AdminDashboard: React.FC<{ user: User, onLogout: () => void }> = ({
   const handleSaveConfig = () => {
     mockStore.setOperationalHours(opHours);
     mockStore.setKitchenStatus(kitchenStatus);
+    mockStore.setAdminUpi(adminUpi);
     alert('Configuration saved successfully!');
   };
 
@@ -247,6 +249,21 @@ export const AdminDashboard: React.FC<{ user: User, onLogout: () => void }> = ({
                       className="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-red-600"
                     />
                   </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 mb-8">
+                <h4 className="font-bold text-lg border-b pb-2">Payment Configuration</h4>
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Your Business UPI ID (for receiving payments)</label>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. yourname@okaxis"
+                    value={adminUpi}
+                    onChange={(e) => setAdminUpi(e.target.value)}
+                    className="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-red-600 font-bold"
+                  />
+                  <p className="text-[10px] text-gray-400 mt-2 italic">All customer UPI payments will be directed to this ID.</p>
                 </div>
               </div>
 

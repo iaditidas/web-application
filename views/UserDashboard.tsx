@@ -19,6 +19,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ user, onLogout, on
   const [upiDetails, setUpiDetails] = useState({ provider: '', upiId: '' });
   const [isVerifying, setIsVerifying] = useState(false);
   const opHours = mockStore.getOperationalHours();
+  const adminUpiId = mockStore.getAdminUpi();
 
   const upiApps = [
     { name: 'Google Pay', color: 'bg-blue-500', icon: 'G' },
@@ -85,7 +86,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ user, onLogout, on
     }
 
     if (paymentMode === 'UPI' && (!upiDetails.provider || !upiDetails.upiId)) {
-      alert('Please provide all UPI details.');
+      alert('Please provide your UPI details for verification.');
       return;
     }
 
@@ -93,7 +94,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ user, onLogout, on
       setIsVerifying(true);
       setTimeout(() => {
         completeOrder(paymentMode);
-      }, 1500);
+      }, 2000);
     } else {
       completeOrder(paymentMode);
     }
@@ -262,14 +263,14 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ user, onLogout, on
                     {isVerifying && (
                       <div className="absolute inset-0 bg-white/90 z-10 flex flex-col items-center justify-center space-y-4">
                         <div className="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
-                        <p className="font-black italic text-red-600 animate-pulse">VERIFYING PAYMENT...</p>
+                        <p className="font-black italic text-red-600 animate-pulse text-center px-6">VERIFYING YOUR PAYMENT WITH THE BANK...</p>
                       </div>
                     )}
                     
                     <div className="flex justify-between items-center">
                       <div>
                         <h4 className="font-black uppercase italic text-red-600 text-lg">UPI Checkout</h4>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Select your preferred app</p>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Scan or Pay to Business ID</p>
                       </div>
                       <button onClick={() => setShowUpiForm(false)} className="p-2 bg-gray-50 rounded-full text-gray-400 hover:text-black transition-colors">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -277,47 +278,61 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ user, onLogout, on
                         </svg>
                       </button>
                     </div>
-                    
-                    <div className="grid grid-cols-3 gap-3">
-                      {upiApps.map(app => (
-                        <button
-                          key={app.name}
-                          onClick={() => setUpiDetails({ ...upiDetails, provider: app.name })}
-                          className={`flex flex-col items-center p-3 rounded-2xl border-2 transition-all ${upiDetails.provider === app.name ? 'border-red-600 bg-red-50' : 'border-gray-100 hover:border-gray-200'}`}
-                        >
-                          <div className={`w-10 h-10 ${app.color} rounded-xl flex items-center justify-center text-white font-black text-sm mb-2 shadow-lg`}>
-                            {app.icon}
-                          </div>
-                          <span className="text-[9px] font-black uppercase tracking-tighter text-center leading-none">{app.name}</span>
-                        </button>
-                      ))}
+
+                    <div className="bg-gray-50 p-4 rounded-2xl border flex flex-col items-center gap-4">
+                      <div className="bg-white p-2 rounded-xl shadow-sm">
+                        <img 
+                          src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`upi://pay?pa=${adminUpiId}&pn=FlashMan&am=${total}&cu=INR`)}`} 
+                          alt="UPI QR Code"
+                          className="w-32 h-32"
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Pay to Business ID</p>
+                        <p className="font-black text-sm text-gray-900">{adminUpiId}</p>
+                      </div>
+                      <a 
+                        href={`upi://pay?pa=${adminUpiId}&pn=FlashMan&am=${total}&cu=INR`}
+                        className="w-full bg-blue-600 text-white py-3 rounded-xl font-black text-xs uppercase text-center shadow-lg shadow-blue-100"
+                      >
+                        Open UPI App
+                      </a>
                     </div>
                     
-                    <div className="space-y-4">
+                    <div className="space-y-4 pt-2 border-t border-gray-100">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">After paying, enter your details below</p>
+                      
+                      <div className="grid grid-cols-2 gap-2">
+                        {upiApps.slice(0, 4).map(app => (
+                          <button
+                            key={app.name}
+                            onClick={() => setUpiDetails({ ...upiDetails, provider: app.name })}
+                            className={`flex items-center gap-2 p-2 rounded-xl border-2 transition-all ${upiDetails.provider === app.name ? 'border-red-600 bg-red-50' : 'border-gray-50'}`}
+                          >
+                            <div className={`w-6 h-6 ${app.color} rounded-md flex items-center justify-center text-white font-black text-[10px]`}>
+                              {app.icon}
+                            </div>
+                            <span className="text-[9px] font-black uppercase">{app.name}</span>
+                          </button>
+                        ))}
+                      </div>
+
                       <div className="relative">
-                        <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 ml-1">Your UPI ID</label>
-                        <div className="relative">
-                          <input 
-                            type="text"
-                            placeholder="e.g. flashman@okaxis"
-                            className="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl font-bold outline-none focus:border-red-600 transition-all pl-12"
-                            value={upiDetails.upiId}
-                            onChange={(e) => setUpiDetails({ ...upiDetails, upiId: e.target.value })}
-                          />
-                          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300">
-                            <Icons.User />
-                          </div>
-                        </div>
+                        <input 
+                          type="text"
+                          placeholder="Your UPI ID (for verification)"
+                          className="w-full p-3 bg-gray-50 border-2 border-gray-100 rounded-xl font-bold outline-none focus:border-red-600 transition-all text-sm"
+                          value={upiDetails.upiId}
+                          onChange={(e) => setUpiDetails({ ...upiDetails, upiId: e.target.value })}
+                        />
                       </div>
                     </div>
 
                     <div className="pt-2">
                       <Button fullWidth onClick={() => placeOrder('UPI')} className="py-4 shadow-xl shadow-red-200">
-                        PAY ₹{total} NOW
+                        I HAVE PAID ₹{total}
                       </Button>
-                      <p className="text-center text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-4">
-                        100% Secure Payments via FlashPay
-                      </p>
                     </div>
                   </div>
                 )}

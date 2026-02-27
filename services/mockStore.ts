@@ -5,6 +5,7 @@ const ORDERS_KEY = 'flash_man_orders';
 const USER_KEY = 'flash_man_user';
 const HOURS_KEY = 'flash_man_hours';
 const KITCHEN_STATUS_KEY = 'flash_man_kitchen_status';
+const ADMIN_UPI_KEY = 'flash_man_admin_upi';
 
 const safeGet = (key: string) => {
   try {
@@ -72,5 +73,11 @@ export const mockStore = {
   },
   setKitchenStatus: (status: boolean) => {
     safeSet(KITCHEN_STATUS_KEY, JSON.stringify(status));
+  },
+  getAdminUpi: () => {
+    return safeGet(ADMIN_UPI_KEY) || 'flashman@okaxis';
+  },
+  setAdminUpi: (upiId: string) => {
+    safeSet(ADMIN_UPI_KEY, upiId);
   }
 };
