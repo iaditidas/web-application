@@ -9,7 +9,7 @@ export const SplashView: React.FC<{ onFinish: () => void }> = ({ onFinish }) => 
   }, [onFinish]);
 
   return (
-    <div className="fixed inset-0 bg-red-600 flex flex-col items-center justify-center text-white p-6 z-50 overflow-hidden">
+    <div className="fixed inset-0 bg-orange-600 flex flex-col items-center justify-center text-white p-6 z-50 overflow-hidden">
       {/* Background Boxes */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
         {[...Array(20)].map((_, i) => (
@@ -30,7 +30,7 @@ export const SplashView: React.FC<{ onFinish: () => void }> = ({ onFinish }) => 
       </div>
 
       <div className="relative z-10 animate-fade-in flex flex-col items-center">
-        <div className="bg-white text-red-600 p-4 rounded-full mb-4 shadow-xl">
+        <div className="bg-white text-orange-600 p-4 rounded-full mb-4 shadow-xl">
           <Icons.Flash />
         </div>
         <h1 className="text-4xl font-extrabold tracking-tighter mb-2 italic">FLASH MAN</h1>

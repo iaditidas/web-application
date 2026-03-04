@@ -5,18 +5,22 @@ import { mockStore } from '../services/mockStore.ts';
 import { User } from '../types.ts';
 
 export const AuthView: React.FC<{ onAuth: (user: User) => void }> = ({ onAuth }) => {
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [isLogin, setIsLogin] = useState(true);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const role = email.endsWith('@flashman.com') ? 'ADMIN' : 'USER';
+    const isEmail = identifier.includes('@');
+    const role = isEmail && identifier.endsWith('@flashman.com') ? 'ADMIN' : 'USER';
+    
     const user: User = {
       id: Math.random().toString(36).substr(2, 9),
-      email,
+      email: isEmail ? identifier : undefined,
+      phone: !isEmail ? identifier : undefined,
       role,
-      name: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1),
+      name: name || (isEmail ? (identifier.split('@')[0].charAt(0).toUpperCase() + identifier.split('@')[0].slice(1)) : 'User ' + identifier.slice(-4)),
     };
     mockStore.setUser(user);
     onAuth(user);
@@ -25,40 +29,53 @@ export const AuthView: React.FC<{ onAuth: (user: User) => void }> = ({ onAuth })
   return (
     <div className="min-h-screen bg-white flex flex-col p-6 max-w-md mx-auto animate-fade-in">
       <div className="mt-12 mb-8">
-        <h2 className="text-3xl font-black mb-2 uppercase italic text-red-600">Flash Man</h2>
-        <p className="text-gray-500 font-medium">
+        <h2 className="text-3xl font-black mb-2 uppercase italic text-emerald-600">Flash Man</h2>
+        <p className="text-stone-500 font-medium">
           {isLogin ? 'Welcome back! Get your food in a flash.' : 'Join the fastest delivery network.'}
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {!isLogin && (
+          <div>
+            <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-1">Your Name</label>
+            <input 
+              type="text" 
+              required
+              className="w-full p-4 bg-stone-50 border-2 border-transparent focus:border-emerald-600 focus:bg-white rounded-xl outline-none transition-all"
+              placeholder="Enter your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+        )}
         <div>
-          <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Email Address</label>
+          <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-1">Email or Phone Number</label>
           <input 
-            type="email" 
+            type="text" 
             required
-            className="w-full p-4 bg-gray-50 border-2 border-transparent focus:border-red-600 focus:bg-white rounded-xl outline-none transition-all"
-            placeholder="name@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-4 bg-stone-50 border-2 border-transparent focus:border-emerald-600 focus:bg-white rounded-xl outline-none transition-all"
+            placeholder="name@example.com or 9876543210"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
           />
-          {email.endsWith('@flashman.com') && (
-            <p className="text-xs mt-1 text-red-600 font-bold uppercase tracking-tighter italic">Admin Portal Access Detected</p>
+          {identifier.endsWith('@flashman.com') && (
+            <p className="text-xs mt-1 text-emerald-600 font-bold uppercase tracking-tighter italic">Admin Portal Access Detected</p>
           )}
         </div>
         <div>
-          <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Password</label>
+          <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-1">Password</label>
           <input 
             type="password" 
             required
-            className="w-full p-4 bg-gray-50 border-2 border-transparent focus:border-red-600 focus:bg-white rounded-xl outline-none transition-all"
+            className="w-full p-4 bg-stone-50 border-2 border-transparent focus:border-emerald-600 focus:bg-white rounded-xl outline-none transition-all"
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         
-        <Button fullWidth type="submit" className="mt-4">
+        <Button fullWidth type="submit" variant="secondary" className="mt-4">
           {isLogin ? 'LOG IN' : 'SIGN UP'}
         </Button>
       </form>
@@ -66,14 +83,14 @@ export const AuthView: React.FC<{ onAuth: (user: User) => void }> = ({ onAuth })
       <div className="mt-8 text-center">
         <button 
           onClick={() => setIsLogin(!isLogin)}
-          className="text-sm font-bold text-gray-500 hover:text-red-600 transition-colors"
+          className="text-sm font-bold text-stone-500 hover:text-emerald-600 transition-colors"
         >
           {isLogin ? "Don't have an account? Sign up" : "Already have an account? Log in"}
         </button>
       </div>
 
       <div className="mt-auto py-8">
-        <p className="text-[10px] text-gray-300 text-center uppercase tracking-[0.3em]">
+        <p className="text-[10px] text-stone-300 text-center uppercase tracking-[0.3em]">
           Secured by FlashMan Logistics
         </p>
       </div>

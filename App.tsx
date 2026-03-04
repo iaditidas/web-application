@@ -81,7 +81,7 @@ const App: React.FC = () => {
         case 'TRACKING':
           return activeOrder ? (
             <TrackingView order={activeOrder} onBack={() => setView('DASHBOARD')} />
-          ) : <div className="p-8 text-center font-bold text-red-600">Order context lost. Redirecting...</div>;
+          ) : <div className="p-8 text-center font-bold text-orange-600">Order context lost. Redirecting...</div>;
         default:
           return <SplashView onFinish={handleSplashFinish} />;
       }
@@ -92,7 +92,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="antialiased selection:bg-red-100 selection:text-red-600 min-h-screen bg-white">
+    <div className="antialiased selection:bg-orange-100 selection:text-orange-600 min-h-screen bg-white">
       {renderView()}
     </div>
   );

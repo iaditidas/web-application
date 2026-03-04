@@ -20,7 +20,8 @@ export interface OrderItem {
 export interface Order {
   id: string;
   userId: string;
-  userEmail: string;
+  userEmail?: string;
+  userPhone?: string;
   items: OrderItem[];
   totalAmount: number;
   paymentMode: 'UPI' | 'COD';
@@ -35,9 +36,10 @@ export interface Order {
 
 export interface User {
   id: string;
-  email: string;
+  email?: string;
   role: 'USER' | 'ADMIN';
   name: string;
+  phone?: string;
 }
 
 export type ViewState = 'SPLASH' | 'AUTH' | 'DASHBOARD' | 'MENU' | 'CART' | 'TRACKING' | 'ADMIN';
